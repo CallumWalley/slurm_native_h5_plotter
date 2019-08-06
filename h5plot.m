@@ -2,20 +2,27 @@
 function [] = h5plot(varargin)
 % h5plot Plots an the output of a SLURM native profiling HDF5 file.
 % Plots the HDF5 outputs from SLURM native profiling.
+% Callum Walley 2019
+% V2.2
+
+%% Usage
+% Run in directory containing .hd5 files. [h5plot()]
+% Or, input path to file or containing folder.  [h5plot('data1.h5','data2.h5','all_other_data/')]
+
 
 %% Settings
 % Plot all on same figure?
 multiplot=true;
 
 % Plot I/O cumulatively.
-cumulativeio=true;
+cumulativeio=false;
 
 % Whether to use exponential y-axis
 % [IO, MaxRSS, CPU util]
 exponent=[0,0,0];
 
 % Do you have taste?
-goodcolors=false;
+goodcolors=true;
    
 %% Get inputs
 % If no input, use this directory.
@@ -44,9 +51,9 @@ for i=1:length(varargin)
         end
     end
 end
-
 index=fieldnames(hdat);
 
+%% Plot
 if multiplot
     figure('Name',strjoin(index));
 end
@@ -58,13 +65,13 @@ else
     colorScale=hsv(length(index));   
 end
 
+
+
 for i=1:length(index)
 
 if ~multiplot
     figure('Name',index{i});
 end
-
-colorScale(i,:);
 
 %% I/O
 subplot(3,1,1);
@@ -107,6 +114,5 @@ end
 if multiplot
     legend(index);
 end 
-
 
 end

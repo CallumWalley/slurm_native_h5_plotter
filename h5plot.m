@@ -9,7 +9,6 @@ function [] = h5plot(varargin)
 % Run in directory containing .hd5 files. [h5plot()]
 % Or, input path to file or containing folder.  [h5plot('data1.h5','data2.h5','all_other_data/')]
 
-
 %% Settings
 % Plot all on same figure?
 multiplot=true;
@@ -27,6 +26,7 @@ goodcolors=true;
 %% Get inputs
 % If no input, use this directory.
 if ~nargin
+    fprintf('No input given...\nLooking for .h5 files on path...\n');
     default_filelist=struct2cell(dir('*.h5'));
     varargin=default_filelist(1,:);
 end
@@ -34,13 +34,13 @@ end
 % Expand folders
 for i=1:length(varargin)
     if exist(varargin{i})==7
-        disp('Expanding Folder');
+        disp('Expanding Folder...');
         addpath(varargin{i});
         default_filelist=struct2cell(dir([varargin{i},'/*.h5']));
         varargin=[varargin, default_filelist(1,:)];
     end
 end
-
+hdat=[];
 %% Validate
 for i=1:length(varargin)
     if exist(varargin{i})==2
@@ -51,7 +51,21 @@ for i=1:length(varargin)
         end
     end
 end
+if length(hdat)<1
+    if ~nargin
+        disp('No valid .h5 on path.');
+        return
+    else
+        disp('No valid .h5 files specified');
+        return
+    end
+end
+
 index=fieldnames(hdat);
+
+disp(['Plotting ', num2str(length(index)), ' dataset(s)...']);
+    %disp('No input given, looking for .h5 files on path.');
+    %return
 
 %% Plot
 if multiplot
@@ -114,5 +128,5 @@ end
 if multiplot
     legend(index);
 end 
-
+disp('Done!');
 end
